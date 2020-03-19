@@ -6,6 +6,7 @@ export class BaddieSpawner {
     private readonly entityMaxCount = 50;
 
     private baddies: Phaser.GameObjects.Group;
+    private parentGroup: Phaser.GameObjects.Group;
 
     private elapsedSpawnTimeMS = 0;
 
@@ -14,13 +15,15 @@ export class BaddieSpawner {
 
     private scene: Phaser.Scene;
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Phaser.Scene, parentGroup: Phaser.GameObjects.Group) {
         this.scene = scene;
         this.baddies = this.scene.add.group({
+            name: 'baddies',
             classType: Baddie,
             maxSize: this.entityMaxCount,
             runChildUpdate: true
         });
+        this.parentGroup = parentGroup;
     }
 
     update(time, delta) {
@@ -34,6 +37,7 @@ export class BaddieSpawner {
             let baddie = this.baddies.get();
             if (baddie) {
                 baddie.spawn(this.xSpawnOffsetCurrent, 0);
+                this.parentGroup.add(baddie);
             }
         }
     }

@@ -1,7 +1,10 @@
 export class Tower {
 
-    private readonly chargeTime = 1000;
-    private chargingTime = 0;
+    private readonly fillAlphaMinimum = 0.1;
+    private readonly fillAlphaMaximum = 1.0;
+
+    private readonly buildTimeMS = 1000;
+    private elapsedTimeMS = 0;
 
     private rect: Phaser.GameObjects.Rectangle;
 
@@ -10,11 +13,27 @@ export class Tower {
     }
 
     update(time, delta) {
-        this.chargingTime += delta;
-        this.rect.fillAlpha = Math.max(0.1, Math.min(this.chargingTime / this.chargeTime, 1.0));
-        if (this.chargingTime >= this.chargeTime) {
+        this.elapsedTimeMS += delta;
+
+        // TODO [20200318] Introduce states such as "Building",
+        // "Defending", "Selling".
+        this.rect.fillAlpha = this.getFillAlpha();
+        if (this.isBuildingComplete()) {
             this.rect.fillColor = 0x00FFFF;
         }
     }
 
+    private isBuildingComplete() {
+        return this.elapsedTimeMS >= this.buildTimeMS;
+    }
+
+    private getFillAlpha() {
+        if (this.isBuildingComplete()) {
+            return this.fillAlphaMaximum;
+        }
+
+        let buildPercentage = this.elapsedTimeMS / this.buildTimeMS;
+        let alphaCeiling = Math.min(buildPercentage, this.fillAlphaMaximum)
+        return Math.max(alphaCeiling, this.fillAlphaMinimum);
+    }
 };

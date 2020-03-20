@@ -1,4 +1,4 @@
-import { Baddie } from '../entity/baddie';
+import { Baddie } from '../baddie/baddie';
 
 export class BaddieSpawner {
 

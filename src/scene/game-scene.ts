@@ -1,5 +1,5 @@
-import { BaddieSpawner } from '../entity/baddie-spawner';
-import { Tower } from '../entity/tower';
+import { BaddieSpawner } from '../entity/baddie/baddie-spawner';
+import { Tower } from '../entity/tower/tower';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -15,6 +15,8 @@ export class GameScene extends Phaser.Scene {
     private spawners: BaddieSpawner[] = [];
     private baddies: Phaser.GameObjects.Group;
     private towers: Phaser.GameObjects.Group;
+
+    private towerTypeIndex: number = 1;
 
     constructor() {
         super(sceneConfig);
@@ -36,12 +38,26 @@ export class GameScene extends Phaser.Scene {
         this.baddies = this.physics.add.group();
 
         this.spawners.push(new BaddieSpawner(this, this.baddies));
-        this.input.on('pointerup', function(pointer){
-            this.towers.add(new Tower(this, pointer.x, pointer.y, this.baddies), true);
-        }, this);
+
+        this.setupTowerTypeChangeEvents();
+        this.input.on('pointerup', this.towerAdd, this);
     }
 
     public update(time, delta) {
         this.spawners.forEach(s => s.update(time, delta));
+    }
+
+    private setupTowerTypeChangeEvents() {
+        this.input.keyboard.on('keydown-ONE', () => this.setTowerType(1), this)
+        this.input.keyboard.on('keydown-TWO', () => this.setTowerType(2), this)
+        this.input.keyboard.on('keydown-THREE', () => this.setTowerType(3), this)
+    }
+
+    private setTowerType(towerType: number) {
+        this.towerTypeIndex = towerType;
+    }
+
+    private towerAdd(pointer: any) {
+        this.towers.add(new Tower(this, pointer.x, pointer.y, this.towerTypeIndex, this.baddies), true);
     }
 }

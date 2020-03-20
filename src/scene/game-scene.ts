@@ -22,6 +22,7 @@ export class GameScene extends Phaser.Scene {
 
     public preload() {
         this.load.image('tower', './assets/tower.png');
+        this.load.spritesheet('towers', './assets/towers.png', {frameWidth: 64, frameHeight: 65});
         this.load.image('baddie', './assets/space-baddie.png');
         this.load.image('bullet', './assets/enemy-bullet.png');
     }

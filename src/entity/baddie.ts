@@ -15,7 +15,7 @@ export class Baddie extends Phaser.GameObjects.Sprite {
     }
 
     update(time, delta) {
-        this.x += this.speed * delta;
+        this.x += this.speed/4 * delta;
         this.y += this.speed * delta;
         if (this.x > window.innerWidth || this.y > window.innerHeight) {
             this.setActive(false);

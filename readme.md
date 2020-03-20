@@ -12,3 +12,17 @@ Tower defense prototypes only dependent on Phaser v3.
 - Ensure index.html has `<base href="/Phase98/">`
 - `npm run build`
 - Copy `/dist` into `/docs`
+
+## ToDos
+**Tower**
+- [Factor method](https://en.wikipedia.org/wiki/Factory_method_pattern) for creation
+- Tower placement
+- Shooting Strategy Manager
+- Basic Selection (Info/Actions(Sell))
+
+**Enemy**
+- Pathing
+- Effect stacking (slow, burn, etc)
+
+**Overall**
+- Spritesheets

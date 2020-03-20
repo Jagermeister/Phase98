@@ -9,17 +9,35 @@ export class Tower extends Phaser.GameObjects.Sprite {
     private readonly buildTimeMS = 1000;
     private elapsedBuildTimeMS = 0;
 
-    private readonly fireDelayMS = 200;
+    private readonly fireDelayMS = 120;
     private elapsedFireTimeMS = 0;
 
-    private readonly fireDistance = 70;
+    private readonly fireDistance = 120;
 
     public scene: Phaser.Scene;
     private bullets: Phaser.GameObjects.Group;
     private baddies: Phaser.GameObjects.Group;
 
     constructor(scene: Phaser.Scene, x: number, y: number, baddies: Phaser.GameObjects.Group) {
-        super(scene, x, y, 'tower');
+        super(scene, x, y, 'towers');
+        scene.anims.create({
+            key: 'build',
+            frames: scene.anims.generateFrameNames('towers', {
+                prefix: '',
+                start: 0,
+                end: 0
+            }),
+            duration: this.buildTimeMS
+        });
+        scene.anims.create({
+            key: 'basic',
+            frames: scene.anims.generateFrameNames('towers', {
+                prefix: '',
+                start: 2,
+                end: 2
+            })
+        });
+
         this.scene = scene;
         this.baddies = baddies;
         this.bullets = scene.physics.add.group({
@@ -27,6 +45,8 @@ export class Tower extends Phaser.GameObjects.Sprite {
             runChildUpdate: true
         });
         this.scene.physics.add.overlap(this.baddies, this.bullets, this.onShot);
+
+        this.anims.play('build', true).on('animationcomplete', () => this.anims.play('basic', true));
     }
 
     update(time, delta) {

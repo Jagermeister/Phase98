@@ -3,7 +3,7 @@ import { Baddie } from '../entity/baddie';
 export class BaddieSpawner {
 
     private readonly spawnDelayMS = 100;
-    private readonly entityMaxCount = 50;
+    private readonly entityMaxCount = 150;
 
     private baddies: Phaser.GameObjects.Group;
     private parentGroup: Phaser.GameObjects.Group;

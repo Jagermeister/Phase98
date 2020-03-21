@@ -117,7 +117,7 @@ export class Tower extends Phaser.GameObjects.Sprite {
         return (baddie: Baddie, bullet: Bullet) => {
             if (this.typeIndex == 3) {
                 baddie.takeDamage(this.damage / 4);
-                baddie.applyEffect(new SlowEffect(this, baddie));
+                baddie.applyEffect(new SlowEffect(baddie));
             } else {
                 baddie.takeDamage(this.damage);
             }

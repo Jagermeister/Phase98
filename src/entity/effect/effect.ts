@@ -1,5 +1,4 @@
 import { Baddie } from "../baddie/baddie";
-import { Tower } from "../tower/tower";
 
 export interface IEntityEffect {
     name: string;
@@ -15,8 +14,7 @@ export abstract class Effect implements IEntityEffect {
 
     public readonly name: string;
 
-    private tower: Tower;
-    private baddie: Baddie;
+    protected baddie: Baddie;
 
     abstract readonly isStackable: boolean;
 
@@ -25,8 +23,7 @@ export abstract class Effect implements IEntityEffect {
 
     readonly movementMultiplier: number = 1.0;
 
-    constructor(tower: Tower, baddie: Baddie) {
-        this.tower = tower;
+    constructor(baddie: Baddie) {
         this.baddie = baddie;
     }
 

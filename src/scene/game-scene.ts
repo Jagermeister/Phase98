@@ -1,6 +1,7 @@
 import { BaddieSpawner } from '../entity/baddie/baddie-spawner';
 import { Tower } from '../entity/tower/tower';
 import { SlowEffect } from '../entity/effect/slow-effect';
+import { LigntningChainEffect } from '../entity/effect/lightning-chain-effect';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -55,6 +56,7 @@ export class GameScene extends Phaser.Scene {
         const tiles = map.addTilesetImage('desert-tiles');
         this.layer = map.createStaticLayer(0, tiles, 0, 0);
         map.setTileIndexCallback([14], this.applySlowEffect, this);
+        map.setTileIndexCallback([9], this.applyLigntningChainEffect, this);
 
         this.towers = this.add.group({
             classType: Tower,
@@ -89,6 +91,10 @@ export class GameScene extends Phaser.Scene {
     }
 
     private applySlowEffect(baddie, tile) {
-        baddie.applyEffect(new SlowEffect(tile, baddie));
+        baddie.applyEffect(new SlowEffect(baddie));
+    }
+
+    private applyLigntningChainEffect(baddie, tile) {
+        baddie.applyEffect(new LigntningChainEffect(baddie, this.baddies, 6));
     }
 }

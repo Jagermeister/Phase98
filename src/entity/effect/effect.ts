@@ -23,7 +23,7 @@ export abstract class Effect implements IEntityEffect {
     abstract readonly duration: number;
     private elapsed: number = 0;
 
-    abstract readonly movementMultiplier: number = 1.0;
+    readonly movementMultiplier: number = 1.0;
 
     constructor(tower: Tower, baddie: Baddie) {
         this.tower = tower;

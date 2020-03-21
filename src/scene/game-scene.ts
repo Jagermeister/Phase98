@@ -1,5 +1,6 @@
 import { BaddieSpawner } from '../entity/baddie/baddie-spawner';
 import { Tower } from '../entity/tower/tower';
+import { SlowEffect } from '../entity/effect/slow-effect';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -17,6 +18,7 @@ export class GameScene extends Phaser.Scene {
     private towers: Phaser.GameObjects.Group;
 
     private towerTypeIndex: number = 1;
+    private layer;
 
     constructor() {
         super(sceneConfig);
@@ -27,9 +29,33 @@ export class GameScene extends Phaser.Scene {
         this.load.spritesheet('towers', './assets/towers.png', {frameWidth: 64, frameHeight: 65});
         this.load.image('baddie', './assets/space-baddie.png');
         this.load.image('bullet', './assets/enemy-bullet.png');
+        this.load.image('desert-tiles', './assets/tmw_desert_spacing.png');
     }
 
     public create() {
+        const level = [
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 5, 6, 7, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 13, 14, 15, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 21, 22, 23, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 5, 6, 6, 6, 7, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 13, 14, 14, 14, 15, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 21, 14, 14, 14, 23, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 21, 14, 23, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 22, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 0, 1, 1, 1, 2, 29, 29, 29, 29, 29, 29,  ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 8, 9, 9, 9, 10, 29, 29, 29, 29, 29, 29,  ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 16, 9, 9, 9, 18, 29, 29, 29, 29, 29, 29,  ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 16, 9, 18, 29, 29, 29, 29, 29, 29, 29,  ],
+            [29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 29, 17, 29, 29, 29, 29, 29, 29, 29, 29,  ],
+        ];
+        const map = this.make.tilemap({ data: level, tileWidth: 32, tileHeight: 32 })
+        const tiles = map.addTilesetImage('desert-tiles');
+        this.layer = map.createStaticLayer(0, tiles, 0, 0);
+        map.setTileIndexCallback([14], this.applySlowEffect, this);
+
         this.towers = this.add.group({
             classType: Tower,
             runChildUpdate: true
@@ -44,6 +70,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     public update(time, delta) {
+        this.physics.collide(this.baddies, this.layer);
         this.spawners.forEach(s => s.update(time, delta));
     }
 
@@ -59,5 +86,9 @@ export class GameScene extends Phaser.Scene {
 
     private towerAdd(pointer: any) {
         this.towers.add(new Tower(this, pointer.x, pointer.y, this.towerTypeIndex, this.baddies), true);
+    }
+
+    private applySlowEffect(baddie, tile) {
+        baddie.applyEffect(new SlowEffect(tile, baddie));
     }
 }

@@ -1,6 +1,4 @@
 import { Effect } from "./effect";
-import { Tower } from "../tower/tower";
-import { Baddie } from "../baddie/baddie";
 
 export class SlowEffect extends Effect {
     public readonly name: string = "SLOW";

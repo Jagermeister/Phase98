@@ -9,6 +9,8 @@ export class Baddie extends Phaser.GameObjects.Sprite {
     private readonly healthMax = 100;
     private health: number;
 
+    private hasTakenDamage: boolean;
+
     private effects: IEntityEffect[];
     private effectNonStacking: Record<string, IEntityEffect>;
 
@@ -21,6 +23,7 @@ export class Baddie extends Phaser.GameObjects.Sprite {
         this.health = this.healthMax;
         this.effects = [];
         this.effectNonStacking = {};
+        this.hasTakenDamage = false;
     }
 
     spawn(x, y) {
@@ -42,6 +45,14 @@ export class Baddie extends Phaser.GameObjects.Sprite {
         }
         this.checkForDeath();
 
+        if (this.hasTakenDamage) {
+            this.setTintFill(0xff0000);
+            this.hasTakenDamage = false;
+        }
+        else {
+            this.clearTint();
+        }
+
         let movementMultipler = this.effects.reduce((p, c) => p * c.onMovement(), 1.0);
 
         this.x += this.speed/4 * delta * movementMultipler;
@@ -54,6 +65,7 @@ export class Baddie extends Phaser.GameObjects.Sprite {
 
     takeDamage(damage: number) {
         this.health -= damage;
+        this.hasTakenDamage = true;
         this.checkForDeath();
     }
 

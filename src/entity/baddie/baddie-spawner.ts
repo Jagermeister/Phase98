@@ -10,7 +10,7 @@ export class BaddieSpawner {
 
     private elapsedSpawnTimeMS = 0;
 
-    private readonly xSpawnOffset = 50;
+    private readonly xSpawnOffset = 20;
     private xSpawnOffsetCurrent = 0;
 
     private scene: Phaser.Scene;

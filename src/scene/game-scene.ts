@@ -17,7 +17,7 @@ export class GameScene extends Phaser.Scene {
     // would later belong with the idea of a specific
     // "level" and not live within the root GameScene.
     private spawners: any[] = [];
-    private baddies: Phaser.GameObjects.Group;
+    private baddies: Phaser.Physics.Arcade.Group;
     private towers: Phaser.GameObjects.Group;
 
     private isPointerMiddleDown: boolean = false;
@@ -25,6 +25,8 @@ export class GameScene extends Phaser.Scene {
     private map: Map;
 
     private towerTypeIndex: number = 1;
+
+    public debugGraphics: Phaser.GameObjects.Graphics;
 
     constructor() {
         super(sceneConfig);
@@ -54,6 +56,8 @@ export class GameScene extends Phaser.Scene {
         this.spawners.push(new BaddieSpawner(this, this.baddies));
         this.spawners.push(new BaddiePathSpawner(this, this.baddies));
         this.setupTowerEvents();
+
+        this.debugGraphics = this.add.graphics({ x: 0, y: 0});
     }
 
     public update(time, delta) {
@@ -82,6 +86,8 @@ export class GameScene extends Phaser.Scene {
             this.isPointerMiddleDown = false;
             this.towers.add(new Tower(this, pointer.x, pointer.y, this.towerTypeIndex, this.baddies), true);
         }
+
+        console.log(pointer.x, pointer.y);
     }
 
     private applySlowEffect(baddie, tile) {

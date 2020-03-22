@@ -7,17 +7,17 @@ export class BaddiePathSpawner {
     private readonly entityMaxCount = 80;
     private readonly startDelayMS = 1550;
 
-    private baddies: Phaser.GameObjects.Group;
-    private parentGroup: Phaser.GameObjects.Group;
+    private baddies: Phaser.Physics.Arcade.Group;
+    private parentGroup: Phaser.Physics.Arcade.Group;
 
     private scene: Phaser.Scene;
 
     private path: Phaser.Curves.Spline;
     private graphics: Phaser.GameObjects.Graphics;
 
-    constructor(scene: Phaser.Scene, parentGroup: Phaser.GameObjects.Group) {
+    constructor(scene: Phaser.Scene, parentGroup: Phaser.Physics.Arcade.Group) {
         this.scene = scene;
-        this.baddies = this.scene.add.group({
+        this.baddies = this.scene.physics.add.group({
             name: 'baddies-path',
             classType: Baddie,
             maxSize: this.entityMaxCount,
@@ -67,7 +67,6 @@ export class BaddiePathSpawner {
             t: 1,
             ease: 'Linear',
             duration: this.travelTimeMS,
-            repeat: -1,
             delay: t => t.i * this.spawnDelayMS + this.startDelayMS
         });
     

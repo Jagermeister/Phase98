@@ -1,8 +1,6 @@
 import { IEntityEffect } from "../effect/effect";
 
-export class Baddie extends Phaser.GameObjects.Sprite {
-
-    private image: Phaser.GameObjects.Sprite & { body: Phaser.Physics.Arcade.Body };
+export class Baddie extends Phaser.Physics.Arcade.Sprite {
 
     private readonly speed = Phaser.Math.GetSpeed(125, 1);
 
@@ -16,10 +14,10 @@ export class Baddie extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene) {
         super(scene, 0, 0, 'baddie');
-        this.reset();
+        this.resetAttributes();
     }
 
-    private reset() {
+    private resetAttributes() {
         this.health = this.healthMax;
         this.effects = [];
         this.effectNonStacking = {};
@@ -27,8 +25,8 @@ export class Baddie extends Phaser.GameObjects.Sprite {
     }
 
     spawn(x, y) {
-        this.reset();
-        this.setPosition(x, y);
+        this.resetAttributes();
+        this.body.reset(x, y);
         this.setActive(true);
         this.setVisible(true);
     }
@@ -48,15 +46,13 @@ export class Baddie extends Phaser.GameObjects.Sprite {
         if (this.hasTakenDamage) {
             this.setTintFill(0xff0000);
             this.hasTakenDamage = false;
-        }
-        else {
+        } else {
             this.clearTint();
         }
 
         let movementMultipler = this.effects.reduce((p, c) => p * c.onMovement(), 1.0);
-
-        this.x += this.speed/4 * delta * movementMultipler;
-        this.y += this.speed * delta * movementMultipler;
+        this.setX(this.x + this.speed/4 * delta * movementMultipler);
+        this.setY(this.y + this.speed * delta * movementMultipler);
         if (this.x > window.innerWidth || this.y > window.innerHeight) {
             this.setActive(false);
             this.setVisible(false);

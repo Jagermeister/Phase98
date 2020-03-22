@@ -1,6 +1,6 @@
 import { Baddie } from '../baddie/baddie';
 
-export class BaddieSpawner {
+export class BaddieSpawner extends Phaser.Physics.Arcade.Group {
 
     private readonly spawnDelayMS = 150;
     private readonly entityMaxCount = 75;
@@ -8,23 +8,21 @@ export class BaddieSpawner {
     private readonly startDelayMS = 1550;
     private startElapsed = 0;
 
-    private baddies: Phaser.GameObjects.Group;
-    private parentGroup: Phaser.GameObjects.Group;
+    private parentGroup: Phaser.Physics.Arcade.Group;
 
     private elapsedSpawnTimeMS = 0;
 
     private readonly xSpawnOffset = 40;
     private xSpawnOffsetCurrent = 0;
 
-    private scene: Phaser.Scene;
-
-    constructor(scene: Phaser.Scene, parentGroup: Phaser.GameObjects.Group) {
-        this.scene = scene;
-        this.baddies = this.scene.add.group({
-            name: 'baddies',
+    constructor(scene: Phaser.Scene, parentGroup: Phaser.Physics.Arcade.Group) {
+        super(scene.physics.world, scene);
+        this.createMultiple({
+            key: 'baddies',
             classType: Baddie,
-            maxSize: this.entityMaxCount,
-            runChildUpdate: true
+            max: this.entityMaxCount,
+            active: false,
+            visible: false,
         });
         this.parentGroup = parentGroup;
     }
@@ -39,13 +37,14 @@ export class BaddieSpawner {
                 if (this.xSpawnOffsetCurrent > window.innerWidth/2) {
                     this.xSpawnOffsetCurrent -= window.innerWidth/2;
                 }
-                let baddie = this.baddies.get();
+                let baddie = this.get() as Baddie;
                 if (baddie) {
                     baddie.spawn(this.xSpawnOffsetCurrent, 0);
                     this.parentGroup.add(baddie);
                 }
             }
         }
+        this.getChildren().forEach(b => b.update(time, delta));
     }
 
 };

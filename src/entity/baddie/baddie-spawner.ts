@@ -5,6 +5,9 @@ export class BaddieSpawner {
     private readonly spawnDelayMS = 150;
     private readonly entityMaxCount = 75;
 
+    private readonly startDelayMS = 1550;
+    private startElapsed = 0;
+
     private baddies: Phaser.GameObjects.Group;
     private parentGroup: Phaser.GameObjects.Group;
 
@@ -27,17 +30,20 @@ export class BaddieSpawner {
     }
 
     update(time, delta) {
-        this.elapsedSpawnTimeMS += delta;
-        if (this.elapsedSpawnTimeMS >= this.spawnDelayMS) {
-            this.elapsedSpawnTimeMS -= this.spawnDelayMS;
-            this.xSpawnOffsetCurrent += this.xSpawnOffset;
-            if (this.xSpawnOffsetCurrent > window.innerWidth/2) {
-                this.xSpawnOffsetCurrent -= window.innerWidth/2;
-            }
-            let baddie = this.baddies.get();
-            if (baddie) {
-                baddie.spawn(this.xSpawnOffsetCurrent, 0);
-                this.parentGroup.add(baddie);
+        this.startElapsed += delta;
+        if (this.startElapsed >= this.startDelayMS) {
+            this.elapsedSpawnTimeMS += delta;
+            if (this.elapsedSpawnTimeMS >= this.spawnDelayMS) {
+                this.elapsedSpawnTimeMS -= this.spawnDelayMS;
+                this.xSpawnOffsetCurrent += this.xSpawnOffset;
+                if (this.xSpawnOffsetCurrent > window.innerWidth/2) {
+                    this.xSpawnOffsetCurrent -= window.innerWidth/2;
+                }
+                let baddie = this.baddies.get();
+                if (baddie) {
+                    baddie.spawn(this.xSpawnOffsetCurrent, 0);
+                    this.parentGroup.add(baddie);
+                }
             }
         }
     }

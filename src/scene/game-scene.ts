@@ -36,8 +36,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('baddie', './assets/space-baddie.png');
         this.load.image('bullet', './assets/enemy-bullet.png');
         this.load.image('desert-tiles', './assets/tmw_desert_spacing.png');
-        this.load.image('dragcircle', './assets/orb-blue.png');
-
+        this.load.image('dragcircle', './assets/desert_button.png');
+        this.load.image('block', 'assets/desert_sand.png');
     }
 
     public create() {
@@ -51,10 +51,8 @@ export class GameScene extends Phaser.Scene {
         });
 
         this.baddies = this.physics.add.group();
-
         this.spawners.push(new BaddieSpawner(this, this.baddies));
         this.spawners.push(new BaddiePathSpawner(this, this.baddies));
-
         this.setupTowerEvents();
     }
 

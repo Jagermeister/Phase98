@@ -2,15 +2,15 @@ import { Baddie } from '../baddie/baddie';
 
 export class BaddieSpawner {
 
-    private readonly spawnDelayMS = 100;
-    private readonly entityMaxCount = 150;
+    private readonly spawnDelayMS = 150;
+    private readonly entityMaxCount = 75;
 
     private baddies: Phaser.GameObjects.Group;
     private parentGroup: Phaser.GameObjects.Group;
 
     private elapsedSpawnTimeMS = 0;
 
-    private readonly xSpawnOffset = 20;
+    private readonly xSpawnOffset = 40;
     private xSpawnOffsetCurrent = 0;
 
     private scene: Phaser.Scene;
@@ -31,8 +31,8 @@ export class BaddieSpawner {
         if (this.elapsedSpawnTimeMS >= this.spawnDelayMS) {
             this.elapsedSpawnTimeMS -= this.spawnDelayMS;
             this.xSpawnOffsetCurrent += this.xSpawnOffset;
-            if (this.xSpawnOffsetCurrent > window.innerWidth) {
-                this.xSpawnOffsetCurrent -= window.innerWidth;
+            if (this.xSpawnOffsetCurrent > window.innerWidth/2) {
+                this.xSpawnOffsetCurrent -= window.innerWidth/2;
             }
             let baddie = this.baddies.get();
             if (baddie) {

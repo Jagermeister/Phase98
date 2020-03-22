@@ -3,6 +3,7 @@ import { Tower } from '../entity/tower/tower';
 import { SlowEffect } from '../entity/effect/slow-effect';
 import { LigntningChainEffect } from '../entity/effect/lightning-chain-effect';
 import { Map as Map } from '../map/map';
+import { BaddiePathSpawner } from '../entity/baddie/baddie-path-spawner';
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
     active: false,
@@ -15,9 +16,11 @@ export class GameScene extends Phaser.Scene {
     // TODO [20200318] The configuration of spawners
     // would later belong with the idea of a specific
     // "level" and not live within the root GameScene.
-    private spawners: BaddieSpawner[] = [];
+    private spawners: any[] = [];
     private baddies: Phaser.GameObjects.Group;
     private towers: Phaser.GameObjects.Group;
+
+    private isPointerMiddleDown: boolean = false;
 
     private map: Map;
 
@@ -33,6 +36,8 @@ export class GameScene extends Phaser.Scene {
         this.load.image('baddie', './assets/space-baddie.png');
         this.load.image('bullet', './assets/enemy-bullet.png');
         this.load.image('desert-tiles', './assets/tmw_desert_spacing.png');
+        this.load.image('dragcircle', './assets/orb-blue.png');
+
     }
 
     public create() {
@@ -48,6 +53,7 @@ export class GameScene extends Phaser.Scene {
         this.baddies = this.physics.add.group();
 
         this.spawners.push(new BaddieSpawner(this, this.baddies));
+        this.spawners.push(new BaddiePathSpawner(this, this.baddies));
 
         this.setupTowerEvents();
     }
@@ -61,6 +67,7 @@ export class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-ONE', () => this.setTowerType(1), this)
         this.input.keyboard.on('keydown-TWO', () => this.setTowerType(2), this)
         this.input.keyboard.on('keydown-THREE', () => this.setTowerType(3), this)
+        this.input.on('pointerdown', this.pointStateUpdate, this);
         this.input.on('pointerup', this.towerAdd, this);
     }
 
@@ -68,8 +75,15 @@ export class GameScene extends Phaser.Scene {
         this.towerTypeIndex = towerType;
     }
 
+    private pointStateUpdate(pointer: any) {
+        this.isPointerMiddleDown = pointer.middleButtonDown();
+    }
+
     private towerAdd(pointer: any) {
-        this.towers.add(new Tower(this, pointer.x, pointer.y, this.towerTypeIndex, this.baddies), true);
+        if (this.isPointerMiddleDown && !pointer.middleButtonDown()) {
+            this.isPointerMiddleDown = false;
+            this.towers.add(new Tower(this, pointer.x, pointer.y, this.towerTypeIndex, this.baddies), true);
+        }
     }
 
     private applySlowEffect(baddie, tile) {
